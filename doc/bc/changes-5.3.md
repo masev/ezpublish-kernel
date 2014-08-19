@@ -92,6 +92,10 @@ Changes affecting version compatibility with former or future versions.
   deprecated for content search use since their behaviour is unpredictable by design when
   content has several locations. Instead use same functionality on new Location Search API.
 
+* As of eZ Publish 5.3.3/2014.09 UserGroup->subGroupCount is deprecated
+  API\Repository\Values\User\UserGroup->subGroupCount will be removed in future version,
+  this value can be obtained on demand using search service or other API methods.
+
 No further changes are known in this release at the time of writing.
 See online on your corresponding eZ Publish version for
 updated list of known issues (missing features, breaks and errata).
