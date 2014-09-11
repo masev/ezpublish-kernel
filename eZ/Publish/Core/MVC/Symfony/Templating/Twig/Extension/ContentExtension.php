@@ -23,6 +23,7 @@ use eZ\Publish\API\Repository\Values\Content\VersionInfo;
 use eZ\Publish\Core\FieldType\XmlText\Converter\Html5 as Html5Converter;
 use eZ\Publish\Core\FieldType\RichText\Converter as RichTextConverterInterface;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
+use eZ\Publish\SPI\Variation\Values\ImageVariation;
 use eZ\Publish\SPI\Variation\VariationHandler;
 use eZ\Publish\API\Repository\Exceptions\InvalidVariationException;
 use Psr\Log\LoggerInterface;
@@ -450,6 +451,9 @@ class ContentExtension extends Twig_Extension
             {
                 $this->logger->error( "Couldn't get variation '{$variationName}' for image with id {$field->value->id}" );
             }
+
+            // Returning an empty variation as it is always expected to return one.
+            return new ImageVariation();
         }
     }
 
