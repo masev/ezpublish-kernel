@@ -40,7 +40,8 @@
         "phpunit/phpunit": "~4.1.3",
         "matthiasnoback/symfony-dependency-injection-test": "0.*",
         "mockery/mockery": "dev-master",
-        "symfony/assetic-bundle": "~2.3"
+        "symfony/assetic-bundle": "~2.3",
+        "phpspec/phpspec": "~2.0"
     },
     "replace": {
         "ezsystems/ezpublish": "*",
