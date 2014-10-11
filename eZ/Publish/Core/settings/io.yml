@@ -2,6 +2,7 @@ parameters:
     ezpublish.core.io.service.class: eZ\Publish\Core\IO\IOService
     ezpublish.core.io.metadataHandler.imageSize.class: eZ\Publish\Core\IO\MetadataHandler\ImageSize
     ezpublish.core.io.mimeTypeDetector.fileinfo.class: eZ\Publish\Core\IO\MimeTypeDetector\FileInfo
+    ezpublish.core.io.url_decorator.absolute_prefix.class: eZ\Publish\Core\IO\UrlDecorator\AbsolutePrefix
 
 services:
     ezpublish.core.io.service:
@@ -40,13 +41,13 @@ services:
         class: eZ\Publish\Core\IO\IOBinarydataHandler\Flysystem
         arguments:
             - ~
-            - @ezpublish.core.io.flysystem.default_url_decorator
+            - @ezpublish.core.io.default_url_decorator
 
     ezpublish.core.io.binarydata_handler.flysystem.default:
         class: eZ\Publish\Core\IO\IOBinarydataHandler\Flysystem
         arguments:
             - @ezpublish.core.io.flysystem.default_filesystem
-            - @ezpublish.core.io.flysystem.default_url_decorator
+            - @ezpublish.core.io.default_url_decorator
 
     ezpublish.core.io.flysystem.base_filesystem:
         class: League\Flysystem\Filesystem
@@ -62,7 +63,10 @@ services:
         arguments:
             - %io_root_dir%
 
-    ezpublish.core.io.flysystem.default_url_decorator:
-        class: eZ\Publish\Core\IO\UrlDecorator\AbsolutePrefix
+    ezpublish.core.io.prefix_url_decorator:
+        class: %ezpublish.core.io.url_decorator.absolute_prefix.class%
         arguments:
             - %storage_dir%
+
+    ezpublish.core.io.default_url_decorator:
+        alias: ezpublish.core.io.prefix_url_decorator

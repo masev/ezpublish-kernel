@@ -1,6 +1,5 @@
 parameters:
     ezpublish.core.io.flysystem.default_adapter.class: League\Flysystem\Adapter\Local
-    ezpublish.core.io.flysystem.storage_dir_url_decorator.class: eZ\Publish\Core\IO\UrlDecorator\AbsolutePrefix
 
 services:
     # Builds the binarydata and metadata handler based on the siteaccess config
@@ -34,7 +33,7 @@ services:
         arguments:
             - "$io_root_dir$"
 
-    ezpublish.core.io.flysystem.default_url_decorator:
-        class: %ezpublish.core.io.flysystem.storage_dir_url_decorator.class%
+    ezpublish.core.io.prefix_url_decorator:
+        class: %ezpublish.core.io.url_decorator.absolute_prefix.class%
         calls:
-            - [ setPrefix, [ "$io_prefix$" ] ]
+            - [ setPrefix, [ "$io.url_prefix$" ] ]
