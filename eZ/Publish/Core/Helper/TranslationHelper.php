@@ -146,11 +146,12 @@ class TranslationHelper
     }
 
     /**
-     * Returns Field definition name in the appropriate language for a given content.
+     * Returns Field definition name in the appropriate language for a given content
+     *
      * By default, this method will return the field definition name in current language if translation is present. If not, main language will be used.
      * If $forcedLanguage is provided, will return the field definition name in this language, if translation is present.
      *
-     * @param \eZ\Publish\API\Repository\Values\Content\Content $content
+     * @param \eZ\Publish\API\Repository\Values\ContentType\ContentType $contentType
      * @param string $fieldTypeIdentifier Field definition identifier.
      * @param string $forcedLanguage Locale we want the field definition name translated in in (e.g. "fre-FR"). Null by default (takes current locale)
      *
@@ -167,13 +168,21 @@ class TranslationHelper
             $languages = $this->configResolver->getParameter( 'languages' );
         }
 
-        // Loop over prioritized languages to get the appropriate translated field definition name .
+        // Take main language code into account
+        $languages[] = $contentType->mainLanguageCode;
+
+        $fieldDefinition = $contentType->getFieldDefinition( $fieldTypeIdentifier );
+        if ( !$fieldDefinition instanceof FieldDefinition )
+        {
+            return null;
+        }
+
+        // Loop over prioritized languages to get the appropriate translated field definition name
         foreach ( $languages as $lang )
         {
-            $fieldDefinition = $contentType->getFieldDefinition( $fieldTypeIdentifier );
-            if ( $fieldDefinition instanceof FieldDefinition && $fieldDefinition->getName( $lang ) )
+            if ( $name = $fieldDefinition->getName( $lang ) )
             {
-                return $fieldDefinition->getName( $lang );
+                return $name;
             }
         }
 

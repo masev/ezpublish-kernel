@@ -653,7 +653,9 @@ class ContentExtension extends Twig_Extension
     }
 
     /**
-     * @param \eZ\Publish\API\Repository\Values\ValueObject $content Must be a valid Content object.
+     * Gets name of a FieldDefinition name by loading ContentType based on Content object
+     *
+     * @param \eZ\Publish\API\Repository\Values\ValueObject $object Must be Content, VersionInfo or ContentInfo object
      * @param string $fieldIdentifier Identifier of the field to translate
      * @param string $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR"). Null by default (takes current locale)
      *
@@ -661,15 +663,36 @@ class ContentExtension extends Twig_Extension
      *
      * @return string
      */
-    public function getTranslatedFieldDefinitionName( ValueObject $content, $fieldIdentifier, $forcedLanguage = null )
+    public function getTranslatedFieldDefinitionName( ValueObject $object, $fieldIdentifier, $forcedLanguage = null )
     {
-        if ( $content instanceof ValueObject )
+        if ( $object instanceof Content )
         {
-            $contentType = $this->repository->getContentTypeService()->loadContentType( $content->contentInfo->contentTypeId );
-            $fieldDefinitionName = $this->translationHelper->getTranslatedFieldDefinitionName( $contentType, $fieldIdentifier, $forcedLanguage );
+            $contentType = $this->repository->getContentTypeService()->loadContentType(
+                $object->getVersionInfo()->getContentInfo()->contentTypeId
+            );
+        }
+        else if ( $object instanceof VersionInfo )
+        {
+            $contentType = $this->repository->getContentTypeService()->loadContentType(
+                $object->getContentInfo()->contentTypeId
+            );
+        }
+        else if ( $object instanceof ContentInfo )
+        {
+            $contentType = $this->repository->getContentTypeService()->loadContentType( $object->contentTypeId );
+        }
+
+        if ( isset( $contentType ) )
+        {
+            $fieldDefinitionName = $this->translationHelper->getTranslatedFieldDefinitionName(
+                $contentType,
+                $fieldIdentifier,
+                $forcedLanguage
+            );
             return $fieldDefinitionName;
         }
-        throw new InvalidArgumentType( '$content', 'eZ\Publish\API\Repository\Values\Content\Content', $content );
+
+        throw new InvalidArgumentType( '$content', 'Content|VersionInfo|ContentInfo', $content );
     }
 
     /**
